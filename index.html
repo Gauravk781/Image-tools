@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Image Tools - Free Online</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet"/>
+</head>
+<body>
+
+  <h1>Image Tools</h1>
+
+  <div class="tool-section">
+    <h2>Resize Image</h2>
+    <input type="file" id="resizeInput" accept="image/*"/>
+    <input type="number" id="resizeWidth" placeholder="Width (px)"/>
+    <input type="number" id="resizeHeight" placeholder="Height (px)"/>
+    <button onclick="resizeImage()">Resize</button>
+    <canvas id="resizeCanvas"></canvas>
+  </div>
+
+  <div class="tool-section">
+    <h2>Crop Image</h2>
+    <input type="file" id="cropInput" accept="image/*"/>
+    <div>
+      <img id="cropImage" style="max-width:100%; display:none;"/>
+    </div>
+    <button onclick="getCropped()">Crop</button>
+    <canvas id="cropCanvas"></canvas>
+  </div>
+
+  <div class="tool-section">
+    <h2>Image to PDF</h2>
+    <input type="file" id="pdfInput" accept="image/*"/>
+    <button onclick="convertToPDF()">Convert to PDF</button>
+  </div>
+
+  <div class="tool-section">
+    <h2>Background Remover</h2>
+    <input type="file" id="bgInput" accept="image/*"/>
+    <button onclick="removeBackground()">Remove Background</button>
+    <p>Note: Uses remove.bg API — replace 'YOUR_API_KEY' in script.js</p>
+    <img id="bgResult" style="max-width:100%;"/>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
