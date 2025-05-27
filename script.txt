@@ -1,0 +1,93 @@
+
+// Resize Tool
+function resizeImage() {
+  const input = document.getElementById("resizeInput");
+  const width = document.getElementById("resizeWidth").value;
+  const height = document.getElementById("resizeHeight").value;
+  const canvas = document.getElementById("resizeCanvas");
+  const ctx = canvas.getContext("2d");
+
+  if (input.files && input.files[0]) {
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      img.onload = function () {
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// Crop Tool
+let cropper;
+document.getElementById("cropInput").addEventListener("change", function(e) {
+  const img = document.getElementById("cropImage");
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(event) {
+    img.src = event.target.result;
+    img.style.display = "block";
+    if (cropper) cropper.destroy();
+    cropper = new Cropper(img, {
+      aspectRatio: NaN,
+      viewMode: 1
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+function getCropped() {
+  const canvas = document.getElementById("cropCanvas");
+  const cropped = cropper.getCroppedCanvas();
+  canvas.width = cropped.width;
+  canvas.height = cropped.height;
+  canvas.getContext("2d").drawImage(cropped, 0, 0);
+}
+
+// Convert to PDF
+async function convertToPDF() {
+  const input = document.getElementById("pdfInput");
+  if (input.files.length === 0) return;
+
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = async function (e) {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+    const imgData = e.target.result;
+    pdf.addImage(imgData, 'JPEG', 10, 10, 180, 160);
+    pdf.save("converted.pdf");
+  };
+  reader.readAsDataURL(file);
+}
+
+// Background Remover
+function removeBackground() {
+  const input = document.getElementById("bgInput");
+  if (input.files.length === 0) return;
+
+  const file = input.files[0];
+  const formData = new FormData();
+  formData.append("image_file", file);
+  formData.append("size", "auto");
+
+  fetch("https://api.remove.bg/v1.0/removebg", {
+    method: "POST",
+    headers: {
+      "X-Api-Key": "YOUR_API_KEY"
+    },
+    body: formData
+  })
+  .then(response => response.blob())
+  .then(blob => {
+    const url = URL.createObjectURL(blob);
+    document.getElementById("bgResult").src = url;
+  })
+  .catch(err => alert("Error removing background: " + err));
+}
